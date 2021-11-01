@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <sys/errno.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -172,7 +173,7 @@ class ServerConnector : public SocketConnector
     protected:
         struct sockaddr_in clientaddr_in;		/* for client socket address */
         int    clientaddr_len = 0;
-        
+        struct ip_mreq mreq;        
     public:
         ServerConnector() {
 	    /* clear out address structures */
@@ -288,6 +289,8 @@ class ServerUDP : public ServerConnector
         }
     int Bind(int port)
     {  
+        myaddr_in.sin_family = AF_INET;
+        myaddr_in.sin_addr.s_addr = htonl(INADDR_ANY);
   	myaddr_in.sin_port = htons(port);
 
         /* Create the socket. */
@@ -363,6 +366,17 @@ class ServerUDP : public ServerConnector
     int Send(const char *msg, int msize) {
     	return Reply(msg,msize);
     }
+
+    int AddMulticastGroup(const char *mcast_group) {
+        mreq.imr_multiaddr.s_addr = inet_addr(mcast_group);
+        mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+        if (setsockopt(Soc, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0) {
+            perror("setsockopt mreq");
+	    return 1;
+        }
+        return 0;
+    }
+
 };
 
 

@@ -4,26 +4,27 @@
 DEST_ADDR?=127.0.0.1
 DEST_PORT?=22333
 
-TARGET=socket-connector
+TARGETS=echoServer echoClient
+
 SRC=tcpudp.h
 
 CFLAGS=-Wall -Wno-unused-local-typedefs -fPIC
 
-default: ${TARGET}.so
+default: ${TARGETS}
 
-all: default echoClient echoServer
-
-${TARGET}.so: ${TARGET}.o
-	g++ -o $@ $^ `wx-config --libs` -l wxsvg -shared
-
-${TARGET}.o: tcpudp.h config.h
-	g++ -o $@ -c ${CFLAGS} -g -D_ALLOW_OLD_PAINEL_PROTOCOL_ `wx-config --cxxflags` $<
+all: default mcast_socket multicastSender multicastReceiver
 
 echoServer: echoServer.cpp tcpudp.h
 	g++ -Wall -o $@ $<
 
 echoClient: echoClient.cpp tcpudp.h
 	g++ -Wall -o $@ $< -l readline
+
+multicastSender: multicastSender.cpp tcpudp.h
+	g++ -Wall -o $@ $< -l readline
+
+multicastReceiver: multicastReceiver.cpp tcpudp.h
+	g++ -Wall -o $@ $<
 
 clean:
 	rm -f ${TARGET}.so ${TARGET}.o echoServer echoClient
