@@ -27,7 +27,7 @@ multicastReceiver: multicastReceiver.cpp tcpudp.h
 	g++ -Wall -o $@ $<
 
 clean:
-	rm -f ${TARGET}.so ${TARGET}.o echoServer echoClient
+	rm -f ${TARGETS} multicastSender multicastReceiver
 
 push:
 	git add .

@@ -2,6 +2,8 @@
  *  Socket Connector
  *
  *  Implements TCP Server, TCP Client, UDP Server and UDP Client
+ *
+ *  https://github.com/miguelleitao/SocketConnector
  */
  
 #ifndef _TCPUDP_H_ 
@@ -114,7 +116,6 @@ class SocketConnector
 
     	virtual int Receive(unsigned char *buffer, int bufsize)
     	{
-    		printf("Receiving\n");
 		cc = recv(Soc, buffer, bufsize , 0);
 		if ( cc == -1) {
 		    if ( errno!=EAGAIN && errno!=EWOULDBLOCK ) {

@@ -36,7 +36,6 @@ int main (int argc, char *argv[])
   do { 
         char *line = readline("Line to transmite: ");
         myClient->Send(line, strlen(line) );
-        printf("Enviou\n");
   
         char buffer[280];
         res = myClient->Receive((unsigned char *)buffer,250);
@@ -46,7 +45,7 @@ int main (int argc, char *argv[])
   	    printf("Received: '%s'\n", buffer);
         }
         else {
-	     fprintf(stderr,"Erro\n");
+	     fprintf(stderr,"Error\n");
         }
         free(line);
   } while (res>1);
